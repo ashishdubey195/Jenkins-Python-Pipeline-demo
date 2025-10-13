@@ -35,7 +35,7 @@ jobs:
       uses: actions/setup-python@v5
       with:
        python-version: ${{ env.MYSTEP-PYTHON-VERSION }}
-    - name: Print a message
+    - name: Print single message
       env:
        APPLICATION: python
       run: echo "The application installed is $APPLICATION"
