@@ -1,43 +1,37 @@
-name: workflow variables
+name: Build python workflow
+
 on:
- push:
-env:
- PYTHON_VERSION: 3.9
+  push:
+
 jobs:
   job1:
-   runs-on: ubuntu-latest
-   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Setup python ${{ env.PYTHON_VERSION }}
-      uses: actions/setup-python@v5
-      with:
-       python-version: ${{ env.PYTHON_VERSION }}
-  job2:
-   runs-on: ubuntu-latest
-   env:
-     MYJOB-PYTHON-VERSION: 3.8
-   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Setup python ${{ env.MYJOB-PYTHON-VERSION }}
-      uses: actions/setup-python@v5
-      with:
-       python-version: ${{ env.MYJOB-PYTHON-VERSION }}
-  job3:
-   runs-on: ubuntu-latest
-   steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-    - name: Setup python
-      env:
-       MYSTEP-PYTHON-VERSION: 3.11
-      uses: actions/setup-python@v5
-      with:
-       python-version: ${{ env.MYSTEP-PYTHON-VERSION }}
-    - name: Print single message
-      env:
-       APPLICATION: python
-      run: echo "The application installed is $APPLICATION"
-   
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ vars.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Set PYTHONPATH
+        run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
+
+      - name: Run tests
+        env:
+          mycmd: ${{ vars.PYTHONCMD }}
+        run: $mycmd
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage.xml
