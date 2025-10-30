@@ -26,10 +26,11 @@ jobs:
         run: echo "PYTHONPATH=$GITHUB_WORKSPACE" >> $GITHUB_ENV
         // this take value of GITHUB_WORKSPACE which is root direstory assign to PYTHONPATH and save it in file GITHUB_ENV
         
+        
       - name: Run tests
         env:
           mycmd: ${{ vars.PYTHONCMD }}
-        run: $mycmd
+        run: $mycmd     // Step Variable and repo variable.
 
       - name: Upload coverage report
         uses: actions/upload-artifact@v4
